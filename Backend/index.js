@@ -9,7 +9,7 @@ const path = require('path')
 require('dotenv').config()
 
 const app = express()
-let database = ''
+let currentDatabase = ''
 
 app.set('port', process.env.PORT || 3001)
 
@@ -21,25 +21,33 @@ app.use(
   })
 )
 
+// Upload database
 app.post('/upload', (req, res) => {
   if (!req.files) {
     return res.status(400).send('No files were uploaded.')
   }
-  console.log(req.files)
-
   const { file } = req.files
-
   const filePath = path.join(__dirname, 'public', file.name)
 
   file.mv(filePath, err => {
     if (err) {
       return res.status(500).send(err)
     }
-    database = databaseOperations.setDatabase(filePath)
+    currentDatabase = databaseOperations.setDatabase(filePath)
     return res.send('File uploaded successfully!')
   })
 })
 
+// Create Database
+app.post('/create', (req, res) => {
+  if (!req.body) return res.status(400).send('No body')
+  const { dbName } = req.body
+  if (!dbName) return res.status(400).send('No dbName')
+  databaseOperations.createDatabase(dbName)
+  return res.send('Database created successfully!')
+})
+
+// Get all saved databases
 app.get('/', (req, res) => {
   const dir = path.join(__dirname, 'public')
   const filesFound = []
@@ -51,18 +59,13 @@ app.get('/', (req, res) => {
   })
 })
 
-app.post('/query', (req, res) => {
-  if (!database) return res.status(400).send('No database found')
+// Send SQL query
+app.post('/query', async (req, res) => {
+  if (!currentDatabase) return res.status(400).send('No database found')
   console.log('query: ', req.body)
   const { query } = req.body
-  const result = []
-  database.serialize(() => {
-    database.each(query, (err, row) => {
-      if (err) console.error(err.message)
-      result.push(row)
-    })
-    res.send(result)
-  })
+  const rows = await databaseOperations.executeQuery(currentDatabase, query)
+  res.json(rows)
 })
 
 app.listen(app.get('port'), () => {

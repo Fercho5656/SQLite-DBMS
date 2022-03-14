@@ -48,3 +48,16 @@ export const sendQuery = async (query: string) => {
     console.error(err)
   }
 }
+
+export const getDatabases = async () => {
+  try {
+    const response = await fetch('http://localhost:3001/databases')
+    const json = await response.json()
+    console.log(json)
+    return json
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export const deleteDatabase = async (dbName: String) => {}

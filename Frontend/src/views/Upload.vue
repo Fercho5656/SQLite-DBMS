@@ -12,6 +12,12 @@
     <button @click="onSendQuery" :disabled="!query">Send Query</button>
   </div>
   <h2>Saved Databases</h2>
+  <ul>
+    <li v-for="database in savedDatabases" :key="database">
+      <a>{{ database }} &nbsp;</a>
+      <button @click="onDeleteDatabase(database)">Delete</button>
+    </li>
+  </ul>
 </template>
 
 <script lang="ts">
@@ -21,12 +27,17 @@ export default {
 </script>
 <script setup lang='ts'>
 import { ref } from "vue";
-import { uploadFile, sendQuery, createDatabase } from "../services/database";
+import { uploadFile, sendQuery, createDatabase, getDatabases, deleteDatabase } from "../services/database";
 
 const selectedFile = ref();
 const newDatabaseName = ref('')
 const query = ref('');
 const result = ref();
+const savedDatabases = ref();
+
+(async () => {
+  savedDatabases.value = await getDatabases();
+})()
 
 const onFileChange = (e: any) => {
   selectedFile.value = e.target.files[0];
@@ -45,6 +56,11 @@ const onSendQuery = async () => {
 const onCreateDatabase = async () => {
   await createDatabase(newDatabaseName.value);
 }
+
+const onDeleteDatabase = async (databaseName: String) => {
+  await deleteDatabase(databaseName);
+}
+
 </script>
 
 <style>

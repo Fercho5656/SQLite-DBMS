@@ -48,14 +48,12 @@ app.post('/create', (req, res) => {
 })
 
 // Get all saved databases
-app.get('/', (req, res) => {
+app.get('/databases', (req, res) => {
   const dir = path.join(__dirname, 'public')
-  const filesFound = []
   // read all files in the directory and push them to the array
   fs.readdir(dir, (err, files) => {
     if (err) console.error(err)
-    files.forEach(file => filesFound.push(file))
-    res.send(filesFound)
+    res.json(files.filter(file => file.endsWith('.db')))
   })
 })
 

@@ -57,6 +57,16 @@ app.get('/databases', (req, res) => {
   })
 })
 
+app.get('/databases/:name', (req, res) => {
+  const { name } = req.params
+  const filePath = path.join(__dirname, 'public', name)
+  if (!fs.existsSync(filePath)) {
+    return res.status(400).send('No such database')
+  }
+  currentDatabase = databaseOperations.setDatabase(filePath)
+  return res.send('Database selected successfully!')
+})
+
 app.delete('/databases/:name', (req, res) => {
   const { name } = req.params
   const filePath = path.join(__dirname, 'public', name)

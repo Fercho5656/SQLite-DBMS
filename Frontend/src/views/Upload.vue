@@ -5,9 +5,7 @@
   </div>
   <div class="create-database">
     <input type="text" name="newDatabase" v-model="newDatabaseName" required />
-    <button @click="onCreateDatabase" :disabled="!newDatabaseName">
-      Create
-    </button>
+    <button @click="onCreateDatabase" :disabled="!newDatabaseName">Create</button>
   </div>
   <div class="query">
     <input type="text" v-model="query" placeholder="SQLite Query" />
@@ -16,8 +14,15 @@
   <h2>Saved Databases</h2>
   <ul>
     <li v-for="database in savedDatabases" :key="database">
-      <a>{{ database }} &nbsp;</a>
+      <a @click="onSelectDatabase(database)">{{ database }} &nbsp;</a>
       <button @click="onDeleteDatabase(database)">Delete</button>
+    </li>
+  </ul>
+  <h2>Tables</h2>
+  <button>Create table</button>
+  <ul>
+    <li v-for="table in tables" :key="table">
+      <p>{{ table.name }}</p>
     </li>
   </ul>
 </template>
@@ -35,6 +40,8 @@ import {
   createDatabase,
   getDatabases,
   deleteDatabase,
+  selectDatabase,
+  Queries
 } from "../services/database";
 
 const selectedFile = ref();
@@ -42,6 +49,7 @@ const newDatabaseName = ref("");
 const query = ref("");
 const result = ref();
 const savedDatabases = ref();
+const tables = ref([] as any[]);
 
 (async () => {
   savedDatabases.value = await getDatabases();
@@ -71,6 +79,12 @@ const onDeleteDatabase = async (databaseName: String) => {
   savedDatabases.value = savedDatabases.value.filter(
     (database: String) => database !== databaseName
   );
+};
+
+const onSelectDatabase = async (database: String) => {
+  console.log(database)
+  await selectDatabase(database);
+  tables.value = await sendQuery(Queries.getTables);
 };
 </script>
 

@@ -1,5 +1,5 @@
-const queries = {
-  showTables: "SELECT * FROM sqlite_master where type='table';"
+export enum Queries {
+  getTables = "SELECT * FROM sqlite_master where type='table';"
 }
 
 export const uploadFile = async (file: File) => {
@@ -64,6 +64,18 @@ export const deleteDatabase = async (db: String) => {
   try {
     const response = await fetch(`http://localhost:3001/databases/${db}`, {
       method: 'DELETE'
+    })
+    const json = await response.json()
+    return json
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export const selectDatabase = async (db: String) => {
+  try {
+    const response = await fetch(`http://localhost:3001/databases/${db}`, {
+      method: 'GET'
     })
     const json = await response.json()
     return json

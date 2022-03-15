@@ -57,6 +57,15 @@ app.get('/databases', (req, res) => {
   })
 })
 
+app.delete('/databases/:name', (req, res) => {
+  const { name } = req.params
+  const filePath = path.join(__dirname, 'public', name)
+  fs.unlink(filePath, err => {
+    if (err) console.error(err)
+    return res.send('Database deleted successfully!')
+  })
+})
+
 // Send SQL query
 app.post('/query', async (req, res) => {
   if (!currentDatabase) return res.status(400).send('No database found')

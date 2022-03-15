@@ -68,6 +68,9 @@ const onCreateDatabase = async () => {
 
 const onDeleteDatabase = async (databaseName: String) => {
   await deleteDatabase(databaseName);
+  savedDatabases.value = savedDatabases.value.filter(
+    (database: String) => database !== databaseName
+  );
 };
 </script>
 

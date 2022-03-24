@@ -1,5 +1,6 @@
 export enum Queries {
-  getTables = "SELECT * FROM sqlite_master where type='table';"
+  getTables = "SELECT * FROM sqlite_master where type='table';",
+  describeTable = 'PRAGMA table_info(%s);'
 }
 
 export const uploadFile = async (file: File) => {
@@ -74,11 +75,9 @@ export const deleteDatabase = async (db: String) => {
 
 export const selectDatabase = async (db: String) => {
   try {
-    const response = await fetch(`http://localhost:3001/databases/${db}`, {
-      method: 'GET'
-    })
-    const json = await response.json()
-    return json
+    await fetch(`http://localhost:3001/databases/${db}`)
+    const tablesJson = await sendQuery(Queries.getTables)
+    return tablesJson
   } catch (err) {
     console.error(err)
   }

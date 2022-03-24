@@ -34,7 +34,7 @@ app.post('/upload', (req, res) => {
       return res.status(500).send(err)
     }
     currentDatabase = databaseOperations.setDatabase(filePath)
-    return res.send('File uploaded successfully!')
+    return res.json('File uploaded successfully!')
   })
 })
 
@@ -44,7 +44,7 @@ app.post('/create', (req, res) => {
   const { dbName } = req.body
   if (!dbName) return res.status(400).send('No dbName')
   databaseOperations.createDatabase(dbName)
-  return res.send('Database created successfully!')
+  return res.json('Database created successfully!')
 })
 
 // Get all saved databases
@@ -61,10 +61,10 @@ app.get('/databases/:name', (req, res) => {
   const { name } = req.params
   const filePath = path.join(__dirname, 'public', name)
   if (!fs.existsSync(filePath)) {
-    return res.status(400).send('No such database')
+    return res.status(400).json('No such database')
   }
   currentDatabase = databaseOperations.setDatabase(filePath)
-  return res.send('Database selected successfully!')
+  return res.json('Database selected successfully!')
 })
 
 app.delete('/databases/:name', (req, res) => {
@@ -72,7 +72,7 @@ app.delete('/databases/:name', (req, res) => {
   const filePath = path.join(__dirname, 'public', name)
   fs.unlink(filePath, err => {
     if (err) console.error(err)
-    return res.send('Database deleted successfully!')
+    return res.json('Database deleted successfully!')
   })
 })
 

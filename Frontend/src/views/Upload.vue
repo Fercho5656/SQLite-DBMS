@@ -1,4 +1,7 @@
 <template>
+  <Modal :show="true">
+    <CreateTable />
+  </Modal>
   <div class="file-upload">
     <input type="file" @change="onFileChange" name="database" />
     <button @click="onUploadFile" :disabled="!selectedFile">Upload</button>
@@ -19,7 +22,7 @@
     </li>
   </ul>
   <h2>Tables</h2>
-  <button>Create table</button>
+  <button :disabled="tables.length === 0">Create table</button>
   <ul>
     <li v-for="table in tables" :key="table">
       <p>{{ table.name }}</p>
@@ -43,6 +46,9 @@ import {
   selectDatabase,
   Queries
 } from "../services/database";
+
+import Modal from '../components/Modal.vue'
+import CreateTable from '../components/CreateTable.vue'
 
 const selectedFile = ref();
 const newDatabaseName = ref("");

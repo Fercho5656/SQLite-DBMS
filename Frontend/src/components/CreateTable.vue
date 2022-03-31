@@ -3,7 +3,7 @@
     <h2>Create Table</h2>
     <div class="form-control">
       <label for="tableName">Table Name</label>
-      <input type="text" id="tableName" />
+      <input type="text" id="tableName" v-model="tableName" />
     </div>
     <div class="controls">
       <button @click="onCreateCol">➕</button>
@@ -60,8 +60,10 @@
     </table>
     <h3>SQLite Query</h3>
     <code>
-      {{sqlQuery}}
+      {{ sqlQuery }}
     </code>
+    <br />
+    <button>Create Table</button>
   </div>
 </template>
 <script lang="ts">
@@ -71,17 +73,16 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
-const sqlQuery = ref<string>('CREATE TABLE');
+const tableName = ref<string>("");
+const sqlQuery = ref<string>("CREATE TABLE");
 const selectedRow = ref<number>();
 const columns = ref([] as any[]);
 
-console.log(selectedRow.value);
-
 const onCreateCol = () => {
   columns.value.push({
-    name: "",
+    name: "NewRow",
     type: "INTEGER",
     notNull: false,
     primaryKey: false,
@@ -90,14 +91,25 @@ const onCreateCol = () => {
   });
 };
 
-const onSelect = (idx: number) => {
-  selectedRow.value = idx;
-  console.log(selectedRow.value);
-};
+const onSelect = (idx: number) => (selectedRow.value = idx);
+
 const onDeleteCol = () => {
   if (selectedRow.value === undefined) return;
   columns.value.splice(selectedRow.value, 1);
 };
+
+const createQuery = () => {
+  const cols = columns.value.map((col, idx) => {
+    const { name, type, notNull, primaryKey, autoIncrement, unique } = col;
+    return `
+    ${idx === 0 ? "" : ","} ${name} ${type} ${notNull ? "NOT NULL" : ""} ${
+      primaryKey ? "PRIMARY KEY" : ""
+    } ${autoIncrement ? "AUTOINCREMENT" : ""} ${unique ? "UNIQUE" : ""}`;
+  });
+  sqlQuery.value = `CREATE TABLE ${tableName.value} (${cols.join(" ")}\n)`;
+};
+
+watch([columns.value, tableName], createQuery);
 </script>
 
 <style scoped>
@@ -117,7 +129,8 @@ tr.active {
 
 code {
   font-size: 15px;
-  width: 100%;
-  max-width: 100%;
+  max-width: 75ch;
+  word-wrap: break-word;
+  white-space: pre-wrap;
 }
 </style>

@@ -3,11 +3,8 @@
     <CreateTable @createTable="onCreateTable" />
   </Modal>
   <UploadDatabase />
-  <CreateDatabase @createDatabase="onCreateDatabase"/>
-  <div class="query">
-    <input type="text" v-model="query" placeholder="SQLite Query" />
-    <button @click="onSendQuery" :disabled="!query">Send Query</button>
-  </div>
+  <CreateDatabase @createDatabase="onCreateDatabase" />
+  <Query @sendQuery="onSendQuery" />
   <h2>Saved Databases</h2>
   <ul>
     <li v-for="database in savedDatabases" :key="database">
@@ -44,12 +41,12 @@ import {
 } from "../services/database";
 
 import UploadDatabase from "../components/UploadDatabase.vue";
-import CreateDatabase from '../components/CreateDatabase.vue';
+import CreateDatabase from "../components/CreateDatabase.vue";
+import Query from "../components/Query.vue";
 import Modal from "../components/Modal.vue";
 import CreateTable from "../components/CreateTable.vue";
 
 const showCreateTable = ref<boolean>(false);
-const query = ref("");
 const result = ref();
 const savedDatabases = ref();
 const tables = ref([] as any[]);
@@ -58,12 +55,12 @@ const tables = ref([] as any[]);
   savedDatabases.value = await getDatabases();
 })();
 
-const onSendQuery = async () => {
-  result.value = sendQuery(query.value);
+const onSendQuery = async (queryResult: object) => {
+  result.value = queryResult;
   console.log(result.value);
 };
 
-const onCreateDatabase = (newDatabase:string) => {
+const onCreateDatabase = (newDatabase: string) => {
   savedDatabases.value.push(newDatabase);
 };
 

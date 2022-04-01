@@ -2,10 +2,7 @@
   <Modal :show="showCreateTable" @close="onSwitchModal(false)">
     <CreateTable @createTable="onCreateTable" />
   </Modal>
-  <div class="file-upload">
-    <input type="file" @change="onFileChange" name="database" />
-    <button @click="onUploadFile" :disabled="!selectedFile">Upload</button>
-  </div>
+  <UploadDatabase />
   <div class="create-database">
     <input type="text" name="newDatabase" v-model="newDatabaseName" required />
     <button @click="onCreateDatabase" :disabled="!newDatabaseName">
@@ -36,7 +33,7 @@
 
 <script lang="ts">
 export default {
-  name: "Upload",
+  name: "Manager",
 };
 </script>
 <script setup lang='ts'>
@@ -51,11 +48,11 @@ import {
   Queries,
 } from "../services/database";
 
+import UploadDatabase from "../components/UploadDatabase.vue";
 import Modal from "../components/Modal.vue";
 import CreateTable from "../components/CreateTable.vue";
 
 const showCreateTable = ref<boolean>(false);
-const selectedFile = ref();
 const newDatabaseName = ref("");
 const query = ref("");
 const result = ref();
@@ -65,15 +62,6 @@ const tables = ref([] as any[]);
 (async () => {
   savedDatabases.value = await getDatabases();
 })();
-
-const onFileChange = (e: any) => {
-  selectedFile.value = e.target.files[0];
-  console.log(typeof selectedFile.value);
-};
-
-const onUploadFile = async () => {
-  await uploadFile(selectedFile.value);
-};
 
 const onSendQuery = async () => {
   result.value = sendQuery(query.value);
@@ -99,10 +87,10 @@ const onSelectDatabase = async (database: String) => {
 
 const onSwitchModal = (newVal: boolean) => (showCreateTable.value = newVal);
 
-const onCreateTable = (newTable:string) => {
+const onCreateTable = (newTable: string) => {
   console.log(newTable);
   showCreateTable.value = false;
-  tables.value.push(newTable)
+  tables.value.push(newTable);
 };
 </script>
 

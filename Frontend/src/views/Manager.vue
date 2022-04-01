@@ -3,12 +3,7 @@
     <CreateTable @createTable="onCreateTable" />
   </Modal>
   <UploadDatabase />
-  <div class="create-database">
-    <input type="text" name="newDatabase" v-model="newDatabaseName" required />
-    <button @click="onCreateDatabase" :disabled="!newDatabaseName">
-      Create
-    </button>
-  </div>
+  <CreateDatabase @createDatabase="onCreateDatabase"/>
   <div class="query">
     <input type="text" v-model="query" placeholder="SQLite Query" />
     <button @click="onSendQuery" :disabled="!query">Send Query</button>
@@ -49,11 +44,11 @@ import {
 } from "../services/database";
 
 import UploadDatabase from "../components/UploadDatabase.vue";
+import CreateDatabase from '../components/CreateDatabase.vue';
 import Modal from "../components/Modal.vue";
 import CreateTable from "../components/CreateTable.vue";
 
 const showCreateTable = ref<boolean>(false);
-const newDatabaseName = ref("");
 const query = ref("");
 const result = ref();
 const savedDatabases = ref();
@@ -68,9 +63,8 @@ const onSendQuery = async () => {
   console.log(result.value);
 };
 
-const onCreateDatabase = async () => {
-  await createDatabase(newDatabaseName.value);
-  savedDatabases.value.push(`${newDatabaseName.value}.db`);
+const onCreateDatabase = (newDatabase:string) => {
+  savedDatabases.value.push(newDatabase);
 };
 
 const onDeleteDatabase = async (databaseName: String) => {

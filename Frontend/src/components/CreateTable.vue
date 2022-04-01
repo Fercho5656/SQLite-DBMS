@@ -63,7 +63,7 @@
       {{ sqlQuery }}
     </code>
     <br />
-    <button>Create Table</button>
+    <button :disabled="columns.length === 0">Create Table</button>
   </div>
 </template>
 <script lang="ts">
@@ -75,7 +75,7 @@ export default {
 <script setup lang="ts">
 import { ref, watch } from "vue";
 
-const tableName = ref<string>("");
+const tableName = ref<string>("NewTable");
 const sqlQuery = ref<string>("CREATE TABLE");
 const selectedRow = ref<number>();
 const columns = ref([] as any[]);

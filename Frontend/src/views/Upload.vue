@@ -1,5 +1,5 @@
 <template>
-  <Modal :show="true">
+  <Modal :show="showCreateTable" @close="onSwitchModal(false)">
     <CreateTable />
   </Modal>
   <div class="file-upload">
@@ -8,7 +8,9 @@
   </div>
   <div class="create-database">
     <input type="text" name="newDatabase" v-model="newDatabaseName" required />
-    <button @click="onCreateDatabase" :disabled="!newDatabaseName">Create</button>
+    <button @click="onCreateDatabase" :disabled="!newDatabaseName">
+      Create
+    </button>
   </div>
   <div class="query">
     <input type="text" v-model="query" placeholder="SQLite Query" />
@@ -22,7 +24,9 @@
     </li>
   </ul>
   <h2>Tables</h2>
-  <button :disabled="tables.length === 0">Create table</button>
+  <button :disabled="tables.length === 0" @click="onSwitchModal(true)">
+    Create table
+  </button>
   <ul>
     <li v-for="table in tables" :key="table">
       <p>{{ table.name }}</p>
@@ -44,12 +48,13 @@ import {
   getDatabases,
   deleteDatabase,
   selectDatabase,
-  Queries
+  Queries,
 } from "../services/database";
 
-import Modal from '../components/Modal.vue'
-import CreateTable from '../components/CreateTable.vue'
+import Modal from "../components/Modal.vue";
+import CreateTable from "../components/CreateTable.vue";
 
+const showCreateTable = ref<boolean>(false);
 const selectedFile = ref();
 const newDatabaseName = ref("");
 const query = ref("");
@@ -88,10 +93,11 @@ const onDeleteDatabase = async (databaseName: String) => {
 };
 
 const onSelectDatabase = async (database: String) => {
-  console.log(database)
   await selectDatabase(database);
   tables.value = await sendQuery(Queries.getTables);
 };
+
+const onSwitchModal = (newVal: boolean) => (showCreateTable.value = newVal);
 </script>
 
 <style>

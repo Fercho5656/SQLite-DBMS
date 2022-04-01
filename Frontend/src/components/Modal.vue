@@ -1,7 +1,7 @@
 <template>
   <transition name="fade">
-    <div class="modal-wrapper">
-      <div class="modal-background" @click="close"></div>
+    <div class="modal-wrapper" v-if="showModal">
+      <div class="modal-background" @click="$emit('close')"></div>
       <div class="modal-content">
         <slot></slot>
       </div>
@@ -17,19 +17,16 @@ export default {
 import { ref, watch } from "vue";
 
 const showModal = ref(false);
-defineProps({
+const props = defineProps({
   show: {
     type: Boolean,
     default: false,
   },
 });
 defineEmits(["close"]);
-watch(
-  () => showModal,
-  (newVal) => {
-    showModal.value = newVal.value;
-  }
-);
+watch(props, () => {
+  showModal.value = props.show;
+});
 </script>
 
 <style>

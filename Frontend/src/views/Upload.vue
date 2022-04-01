@@ -1,6 +1,6 @@
 <template>
   <Modal :show="showCreateTable" @close="onSwitchModal(false)">
-    <CreateTable />
+    <CreateTable @createTable="onCreateTable" />
   </Modal>
   <div class="file-upload">
     <input type="file" @change="onFileChange" name="database" />
@@ -98,6 +98,12 @@ const onSelectDatabase = async (database: String) => {
 };
 
 const onSwitchModal = (newVal: boolean) => (showCreateTable.value = newVal);
+
+const onCreateTable = (newTable:string) => {
+  console.log(newTable);
+  showCreateTable.value = false;
+  tables.value.push(newTable)
+};
 </script>
 
 <style>

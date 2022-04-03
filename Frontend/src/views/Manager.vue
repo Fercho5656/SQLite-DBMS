@@ -5,13 +5,11 @@
   <UploadDatabase />
   <CreateDatabase @createDatabase="onCreateDatabase" />
   <Query @sendQuery="onSendQuery" />
-  <h2>Saved Databases</h2>
-  <ul>
-    <li v-for="database in savedDatabases" :key="database">
-      <a @click="onSelectDatabase(database)">{{ database }} &nbsp;</a>
-      <button @click="onDeleteDatabase(database)">Delete</button>
-    </li>
-  </ul>
+  <SavedDatabases
+    :savedDatabases="savedDatabases"
+    @selectDatabase="onSelectDatabase"
+    @deleteDatabase="onDeleteDatabase"
+  />
   <h2>Tables</h2>
   <button :disabled="tables.length === 0" @click="onSwitchModal(true)">
     Create table
@@ -40,6 +38,7 @@ import {
   Queries,
 } from "../services/database";
 
+import SavedDatabases from "../components/SavedDatabases.vue";
 import UploadDatabase from "../components/UploadDatabase.vue";
 import CreateDatabase from "../components/CreateDatabase.vue";
 import Query from "../components/Query.vue";

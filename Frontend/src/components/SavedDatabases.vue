@@ -16,7 +16,7 @@ export default {
 
 <script setup lang="ts">
 interface Props {
-  savedDatabases: [];
+  savedDatabases: any[];
 }
 defineProps<Props>();
 

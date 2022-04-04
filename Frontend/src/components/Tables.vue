@@ -1,11 +1,22 @@
 <template>
     <h2>Tables</h2>
     <button :disabled="tables.length === 0" @click="$emit('onSwitchModal', true)">Create table</button>
-    <ul>
-        <li v-for="table in tables" :key="table">
-            <p>{{ table.name }}</p>
-        </li>
-    </ul>
+    <div class="wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Schema</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="table in tables" :key="table.name">
+                    <td>{{ table.name }}</td>
+                    <td>{{ table.sql }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </template>
 
 <script lang="ts">
@@ -23,4 +34,9 @@ const emit = defineEmits(['onSwitchModal']);
 </script>
 
 <style scoped>
+.wrapper {
+    text-align: left;
+    overflow-x: auto;
+    white-space: nowrap;
+}
 </style>

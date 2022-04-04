@@ -16,13 +16,12 @@ export default {
 <script setup lang="ts">
 import { ref, watch } from "vue";
 
+interface Props {
+  show: boolean;
+}
+
 const showModal = ref(false);
-const props = defineProps({
-  show: {
-    type: Boolean,
-    default: false,
-  },
-});
+const props = defineProps<Props>();
 defineEmits(["close"]);
 watch(props, () => {
   showModal.value = props.show;

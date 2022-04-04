@@ -15,12 +15,10 @@ export default {
 </script>
 
 <script setup lang="ts">
-defineProps({
-  savedDatabases: {
-    type: Array,
-    default: () => [],
-  },
-});
+interface Props {
+  savedDatabases: [];
+}
+defineProps<Props>();
 
 defineEmits(["selectDatabase", "deleteDatabase"]);
 </script>

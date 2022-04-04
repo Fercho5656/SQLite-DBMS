@@ -10,15 +10,7 @@
     @selectDatabase="onSelectDatabase"
     @deleteDatabase="onDeleteDatabase"
   />
-  <h2>Tables</h2>
-  <button :disabled="tables.length === 0" @click="onSwitchModal(true)">
-    Create table
-  </button>
-  <ul>
-    <li v-for="table in tables" :key="table">
-      <p>{{ table.name }}</p>
-    </li>
-  </ul>
+  <Tables :tables="tables" @onSwitchModal="onSwitchModal"/>
 </template>
 
 <script lang="ts">
@@ -38,6 +30,7 @@ import {
   Queries,
 } from "../services/database";
 
+import Tables from '../components/Tables.vue';
 import SavedDatabases from "../components/SavedDatabases.vue";
 import UploadDatabase from "../components/UploadDatabase.vue";
 import CreateDatabase from "../components/CreateDatabase.vue";
@@ -73,6 +66,7 @@ const onDeleteDatabase = async (databaseName: String) => {
 const onSelectDatabase = async (database: String) => {
   await selectDatabase(database);
   tables.value = await sendQuery(Queries.getTables);
+  console.log(tables.value);
 };
 
 const onSwitchModal = (newVal: boolean) => (showCreateTable.value = newVal);

@@ -63,7 +63,9 @@
       {{ sqlQuery }}
     </code>
     <br />
-    <button :disabled="columns.length === 0" @click="onCreateTable">Create Table</button>
+    <button :disabled="columns.length === 0" @click="onCreateTable">
+      Create Table
+    </button>
   </div>
 </template>
 <script lang="ts">
@@ -74,7 +76,7 @@ export default {
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import {sendQuery} from "../services/database";
+import { sendQuery } from "../services/database";
 
 const emit = defineEmits(["createTable"]);
 
@@ -103,8 +105,11 @@ const onDeleteCol = () => {
 
 const onCreateTable = async () => {
   await sendQuery(sqlQuery.value);
-  emit("createTable", tableName.value);
-}
+  emit("createTable", {
+    name: tableName.value,
+    sql: sqlQuery.value,
+  });
+};
 
 const createQuery = () => {
   const cols = columns.value.map((col, idx) => {

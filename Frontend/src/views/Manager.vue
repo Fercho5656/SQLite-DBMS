@@ -10,7 +10,7 @@
     @selectDatabase="onSelectDatabase"
     @deleteDatabase="onDeleteDatabase"
   />
-  <Tables :tables="tables" @onSwitchModal="onSwitchModal"/>
+  <Tables :tables="tables" @onSwitchModal="onSwitchModal" />
 </template>
 
 <script lang="ts">
@@ -30,7 +30,7 @@ import {
   Queries,
 } from "../services/database";
 
-import Tables from '../components/Tables.vue';
+import Tables from "../components/Tables.vue";
 import SavedDatabases from "../components/SavedDatabases.vue";
 import UploadDatabase from "../components/UploadDatabase.vue";
 import CreateDatabase from "../components/CreateDatabase.vue";
@@ -40,7 +40,7 @@ import CreateTable from "../components/CreateTable.vue";
 
 const showCreateTable = ref<boolean>(false);
 const result = ref();
-const savedDatabases = ref();
+const savedDatabases = ref([] as any[]);
 const tables = ref([] as any[]);
 
 (async () => {

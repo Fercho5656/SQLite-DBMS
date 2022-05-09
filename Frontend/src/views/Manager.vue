@@ -5,12 +5,9 @@
   <UploadDatabase />
   <CreateDatabase @createDatabase="onCreateDatabase" />
   <Query @sendQuery="onSendQuery" />
-  <SavedDatabases
-    :savedDatabases="savedDatabases"
-    @selectDatabase="onSelectDatabase"
-    @deleteDatabase="onDeleteDatabase"
-  />
-  <Tables :tables="tables" @onSwitchModal="onSwitchModal" />
+  <SavedDatabases :savedDatabases="savedDatabases" @selectDatabase="onSelectDatabase"
+    @deleteDatabase="onDeleteDatabase" />
+  <Tables :tables="tables" :isDatabaseSelected="activeDatabase.length !== 0" @onSwitchModal="onSwitchModal" @onDeleteTable="onDeleteTable" />
 </template>
 
 <script lang="ts">
@@ -41,6 +38,7 @@ import CreateTable from "../components/CreateTable.vue";
 const showCreateTable = ref<boolean>(false);
 const result = ref();
 const savedDatabases = ref([] as any[]);
+const activeDatabase = ref<string>("");
 const tables = ref([] as any[]);
 
 (async () => {
@@ -56,16 +54,17 @@ const onCreateDatabase = (newDatabase: string) => {
   savedDatabases.value.push(newDatabase);
 };
 
-const onDeleteDatabase = async (databaseName: String) => {
+const onDeleteDatabase = async (databaseName: string) => {
   await deleteDatabase(databaseName);
   savedDatabases.value = savedDatabases.value.filter(
-    (database: String) => database !== databaseName
+    (database: string) => database !== databaseName
   );
 };
 
-const onSelectDatabase = async (database: String) => {
+const onSelectDatabase = async (database: string) => {
   await selectDatabase(database);
   tables.value = await sendQuery(Queries.getTables);
+  activeDatabase.value = database;
   console.log(tables.value);
 };
 
@@ -76,6 +75,13 @@ const onCreateTable = (newTable: string) => {
   showCreateTable.value = false;
   tables.value.push(newTable);
 };
+
+const onDeleteTable = async (tableName: string) => {
+  const res = await sendQuery(`DROP TABLE ${tableName}`);
+  if (res.status !== 500) {
+    tables.value = tables.value.filter((table: any) => table.name !== tableName);
+  }
+}
 </script>
 
 <style>

@@ -21,15 +21,13 @@
           <th>Primary Key</th>
           <th>Auto Increment</th>
           <th>Unique</th>
+          <th>Foreign Key</th>
+          <th>Foreign Table</th>
+          <th>Foreign Column</th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="(col, idx) in columns"
-          :key="col"
-          :class="{ active: idx === selectedRow }"
-          @click="onSelect(idx)"
-        >
+        <tr v-for="(col, idx) in columns" :key="col" :class="{ active: idx === selectedRow }" @click="onSelect(idx)">
           <td>{{ idx }}</td>
           <td>
             <input type="text" v-model="col.name" placeholder="Row" />
@@ -55,6 +53,22 @@
           <td>
             <input type="checkbox" v-model="col.unique" />
           </td>
+          <td>
+            <input type="checkbox" v-model="col.foreignKey" />
+          </td>
+          <td>
+            <select v-model="col.foreignTable" :disabled="!col.foreignKey" @change="updateColumns(idx)">
+              <option disabled>None</option>
+              <option v-for="table in foreignTables" :key="table.name" :value="table.name">{{ table.name }}</option>
+            </select>
+          </td>
+          <td>
+            <select v-model="col.foreignColumn" :disabled="!col.foreignKey">
+              <option disabled>None</option>
+              <option v-for="column in col.foreignColumns" :key="column.name" :value="column.name">{{ column.name }}
+              </option>
+            </select>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -75,8 +89,8 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
-import { sendQuery } from "../services/database";
+import { onMounted, ref, watch } from "vue";
+import { sendQuery, Queries } from "../services/database";
 
 const emit = defineEmits(["createTable"]);
 
@@ -84,6 +98,12 @@ const tableName = ref<string>("NewTable");
 const sqlQuery = ref<string>("CREATE TABLE");
 const selectedRow = ref<number>();
 const columns = ref([] as any[]);
+
+const foreignTables = ref([] as any[]);
+
+onMounted(async () => {
+  foreignTables.value = await sendQuery(Queries.getTables);
+});
 
 const onCreateCol = () => {
   columns.value.push({
@@ -93,6 +113,10 @@ const onCreateCol = () => {
     primaryKey: false,
     autoIncrement: false,
     unique: false,
+    foreignKey: false,
+    foreignTable: "",
+    foreignColumns: [],
+    foreignColumn: "",
   });
 };
 
@@ -111,13 +135,19 @@ const onCreateTable = async () => {
   });
 };
 
+const updateColumns = async (colIdx: number) => {
+  console.log(colIdx);
+  const foreignColumns = await sendQuery(Queries.describeTable.replace("%s", columns.value[colIdx].foreignTable));
+  columns.value[colIdx].foreignColumns = foreignColumns;
+}
+
 const createQuery = () => {
   const cols = columns.value.map((col, idx) => {
-    const { name, type, notNull, primaryKey, autoIncrement, unique } = col;
+    const { name, type, notNull, primaryKey, autoIncrement, unique, foreignTable, foreignColumn } = col;
     return `
-    ${idx === 0 ? "" : ","} ${name} ${type} ${notNull ? "NOT NULL" : ""} ${
-      primaryKey ? "PRIMARY KEY" : ""
-    } ${autoIncrement ? "AUTOINCREMENT" : ""} ${unique ? "UNIQUE" : ""}`;
+    ${idx === 0 ? "" : ","} ${name} ${type} ${notNull ? "NOT NULL" : ""} ${primaryKey ? "PRIMARY KEY" : ""
+      } ${autoIncrement ? "AUTOINCREMENT" : ""} ${unique ? "UNIQUE" : ""} ${col.foreignKey ? `FOREIGN KEY(${tableName.value}${foreignTable})` : ""} ${col.foreignTable ? `REFERENCES ${foreignTable}(${foreignColumn})` : ""}
+     `;
   });
   sqlQuery.value = `CREATE TABLE ${tableName.value} (${cols.join(" ")}\n)`;
 };

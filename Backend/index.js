@@ -81,8 +81,12 @@ app.post('/query', async (req, res) => {
   if (!currentDatabase) return res.status(400).send('No database found')
   console.log('query: ', req.body)
   const { query } = req.body
-  const rows = await databaseOperations.executeQuery(currentDatabase, query)
-  res.json(rows)
+  try {
+    const rows = await databaseOperations.executeQuery(currentDatabase, query)
+    res.json(rows)
+  } catch (error) {
+    return res.status(500).send(error)
+  }
 })
 
 app.listen(app.get('port'), () => {

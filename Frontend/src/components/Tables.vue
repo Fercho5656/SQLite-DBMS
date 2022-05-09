@@ -21,6 +21,7 @@
           <td>{{ table.sql }}</td>
           <td>
             <button @click="onEditTable(table.name)">🖊</button>
+            <button @click="onDeleteTable(table.name)">🗑</button>
           </td>
         </tr>
       </tbody>

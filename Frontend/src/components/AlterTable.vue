@@ -1,6 +1,5 @@
 <template>
     <h2>Alter {{tableName}}</h2>
-    <button>Add Column</button>
     <table>
         <thead>
             <tr>

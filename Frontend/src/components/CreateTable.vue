@@ -146,7 +146,7 @@ const createQuery = () => {
     const { name, type, notNull, primaryKey, autoIncrement, unique, foreignTable, foreignColumn } = col;
     return `
     ${idx === 0 ? "" : ","} ${name} ${type} ${notNull ? "NOT NULL" : ""} ${primaryKey ? "PRIMARY KEY" : ""
-      } ${autoIncrement ? "AUTOINCREMENT" : ""} ${unique ? "UNIQUE" : ""} ${col.foreignKey ? `FOREIGN KEY(${tableName.value}${foreignTable})` : ""} ${col.foreignTable ? `REFERENCES ${foreignTable}(${foreignColumn})` : ""}
+      } ${autoIncrement ? "AUTOINCREMENT" : ""} ${unique ? "UNIQUE" : ""} ${col.foreignTable ? `REFERENCES ${foreignTable}(${foreignColumn})` : ""}
      `;
   });
   sqlQuery.value = `CREATE TABLE ${tableName.value} (${cols.join(" ")}\n)`;

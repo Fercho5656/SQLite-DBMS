@@ -40,6 +40,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const emits = defineEmits(["onSendQuery"]);
 const col1 = ref<string>('');
 const col2 = ref<string>('');
 const sqlOperator = ref<string>('');
@@ -48,6 +49,7 @@ const sqlQuery = ref<string>('');
 
 const onSendQuery = async () => {
     const res = await sendQuery(sqlQuery.value);
+    emits("onSendQuery", sqlQuery.value);
     if (res) {
         console.log(res);
     }

@@ -22,7 +22,9 @@
         <button @click="onSendQuery">Send Select</button>
     </div>
     <code>
-        {{ sqlQuery }}
+        <br>
+        {{ queryResult }}
+        <br>
     </code>
 </template>
 
@@ -46,12 +48,14 @@ const col2 = ref<string>('');
 const sqlOperator = ref<string>('');
 const conditionValue = ref<string>('');
 const sqlQuery = ref<string>('');
+const queryResult = ref([] as any[]);
 
 const onSendQuery = async () => {
     const res = await sendQuery(sqlQuery.value);
     emits("onSendQuery", sqlQuery.value);
     if (res) {
         console.log(res);
+        queryResult.value = res;
     }
 }
 

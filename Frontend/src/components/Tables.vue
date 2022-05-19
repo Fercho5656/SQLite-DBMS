@@ -101,6 +101,9 @@ const onCreateView = async (tableName: string) => {
 
 <style scoped>
 .wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
   text-align: left;
   overflow-x: auto;
   white-space: nowrap;

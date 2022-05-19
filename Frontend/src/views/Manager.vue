@@ -8,6 +8,7 @@
   <SavedDatabases :savedDatabases="savedDatabases" @selectDatabase="onSelectDatabase"
     @deleteDatabase="onDeleteDatabase" />
   <Tables :tables="tables" :isDatabaseSelected="activeDatabase.length !== 0" @onSwitchModal="onSwitchModal" @onDeleteTable="onDeleteTable" />
+  <Views :views="views" @onDeleteView="onDeleteView"/>
 </template>
 
 <script lang="ts">
@@ -28,6 +29,7 @@ import {
 } from "../services/database";
 
 import Tables from "../components/Tables.vue";
+import Views from "../components/Views.vue";
 import SavedDatabases from "../components/SavedDatabases.vue";
 import UploadDatabase from "../components/UploadDatabase.vue";
 import CreateDatabase from "../components/CreateDatabase.vue";
@@ -40,6 +42,7 @@ const result = ref();
 const savedDatabases = ref([] as any[]);
 const activeDatabase = ref<string>("");
 const tables = ref([] as any[]);
+const views = ref([] as any[]);
 
 (async () => {
   savedDatabases.value = await getDatabases();
@@ -61,11 +64,17 @@ const onDeleteDatabase = async (databaseName: string) => {
   );
 };
 
+const onDeleteView = async (viewName: string) => {
+  await sendQuery(`DROP VIEW ${viewName}`);
+  views.value = views.value.filter((view: any) => view.name !== viewName); 
+}
+
 const onSelectDatabase = async (database: string) => {
   await selectDatabase(database);
   tables.value = await sendQuery(Queries.getTables);
+  views.value = await sendQuery(Queries.getViews);
   activeDatabase.value = database;
-  console.log(tables.value);
+  console.log(views.value);
 };
 
 const onSwitchModal = (newVal: boolean) => (showCreateTable.value = newVal);

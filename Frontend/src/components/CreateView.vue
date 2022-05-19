@@ -25,6 +25,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const emits = defineEmits(["onCreateView"]);
 const viewName = ref<string>(`${props.tableName}View`);
 const viewQuery = ref<string>('');
 const onReceiveQuery = (query: string) => {
@@ -34,6 +35,7 @@ const onCreateView = async () => {
     const res = await sendQuery(viewQuery.value);    
     if (res) {
         console.log(res);
+        emits('onCreateView')
     }
 }
 </script>

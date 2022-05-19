@@ -6,7 +6,7 @@
     <SelectTable :columns="tableColumns" :tableName="selectedTable" />
   </Modal>
   <Modal :show="showCreateView" @close="onSwitchViewModal(false)">
-    <CreateView :columns="tableColumns" :tableName="selectedTable" />
+    <CreateView :columns="tableColumns" :tableName="selectedTable" @onCreateView="onSwitchViewModal(false)"/>
   </Modal>
   <h2>Tables</h2>
   <button :disabled="!isDatabaseSelected" @click="$emit('onSwitchModal', true)">

@@ -1,5 +1,6 @@
 export enum Queries {
   getTables = "SELECT * FROM sqlite_master where type='table';",
+  getViews = "SELECT * FROM sqlite_master where type='view';",
   describeTable = 'PRAGMA table_info(%s);'
 }
 

@@ -36,6 +36,26 @@ export const createDatabase = async (dbName: string) => {
   }
 }
 
+export const backupDatabase = async (database: string) => {
+  try {
+    const response = await fetch(
+      `http://localhost:3001/databases/${database}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ action: 'backup' })
+      }
+    )
+    const data = await response.json()
+    const { status } = response
+    return { data, status }
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 export const sendQuery = async (query: string) => {
   try {
     const response = await fetch('http://localhost:3001/query', {

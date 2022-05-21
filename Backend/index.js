@@ -76,6 +76,30 @@ app.delete('/databases/:name', (req, res) => {
   })
 })
 
+app.post('/databases/:name', async (req, res) => {
+  const { name } = req.params
+  const { action } = req.body
+  const date = new Date()
+  const backupName = `${name}_${date.getDate()}_${date.getMonth()}_${date.getFullYear()}_${date.getHours()}_${date.getMinutes()}_${date.getSeconds()}`
+  if (!action) return res.status(400).send('No action')
+  if (action === 'backup') {
+    fs.copyFile(
+      `./public/${name}`,
+      `./public/${backupName}.db`,
+      err => {
+        if (err) {
+          console.error(err)
+          return res.status(500).send(err)
+        }
+        return res.status(200).send({
+          message: 'Database backup created successfully!',
+          backupName
+        })
+      }
+    )
+  }
+})
+
 // Send SQL query
 app.post('/query', async (req, res) => {
   if (!currentDatabase) return res.status(400).send('No database found')

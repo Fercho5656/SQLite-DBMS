@@ -5,10 +5,11 @@
   <UploadDatabase />
   <CreateDatabase @createDatabase="onCreateDatabase" />
   <Query @sendQuery="onSendQuery" />
-  <SavedDatabases :savedDatabases="savedDatabases" @selectDatabase="onSelectDatabase"
-    @deleteDatabase="onDeleteDatabase" />
-  <Tables :tables="tables" :isDatabaseSelected="activeDatabase.length !== 0" @onSwitchModal="onSwitchModal" @onDeleteTable="onDeleteTable" />
-  <Views :views="views" @onDeleteView="onDeleteView"/>
+  <SavedDatabases :savedDatabases="savedDatabases" @selectDatabase="onSelectDatabase" @deleteDatabase="onDeleteDatabase"
+    @backupDatabase="onBackupDatabase" />
+  <Tables :tables="tables" :isDatabaseSelected="activeDatabase.length !== 0" @onSwitchModal="onSwitchModal"
+    @onDeleteTable="onDeleteTable" />
+  <Views :views="views" @onDeleteView="onDeleteView" />
 </template>
 
 <script lang="ts">
@@ -25,6 +26,7 @@ import {
   getDatabases,
   deleteDatabase,
   selectDatabase,
+  backupDatabase,
   Queries,
 } from "../services/database";
 
@@ -66,7 +68,7 @@ const onDeleteDatabase = async (databaseName: string) => {
 
 const onDeleteView = async (viewName: string) => {
   await sendQuery(`DROP VIEW ${viewName}`);
-  views.value = views.value.filter((view: any) => view.name !== viewName); 
+  views.value = views.value.filter((view: any) => view.name !== viewName);
 }
 
 const onSelectDatabase = async (database: string) => {
@@ -75,6 +77,18 @@ const onSelectDatabase = async (database: string) => {
   views.value = await sendQuery(Queries.getViews);
   activeDatabase.value = database;
   console.log(views.value);
+};
+
+const onBackupDatabase = async (database: string) => {
+  const res = await backupDatabase(database);
+  const { status }: any = res
+  const { data }: any = res
+  if (status === 200) {
+    console.log("Backup Successful");
+    savedDatabases.value.push(`${data.backupName}.db`);
+  } else {
+    console.log("Backup Failed");
+  }
 };
 
 const onSwitchModal = (newVal: boolean) => (showCreateTable.value = newVal);

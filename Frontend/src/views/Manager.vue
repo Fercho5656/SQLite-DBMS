@@ -10,6 +10,7 @@
   <Tables :tables="tables" :isDatabaseSelected="activeDatabase.length !== 0" @onSwitchModal="onSwitchModal"
     @onDeleteTable="onDeleteTable" />
   <Views :views="views" @onDeleteView="onDeleteView" />
+  <Triggers :triggers="triggers" @onDeleteTrigger="onDeleteTrigger" />
 </template>
 
 <script lang="ts">
@@ -35,6 +36,7 @@ import Views from "../components/Views.vue";
 import SavedDatabases from "../components/SavedDatabases.vue";
 import UploadDatabase from "../components/UploadDatabase.vue";
 import CreateDatabase from "../components/CreateDatabase.vue";
+import Triggers from "../components/Triggers.vue";
 import Query from "../components/Query.vue";
 import Modal from "../components/Modal.vue";
 import CreateTable from "../components/CreateTable.vue";
@@ -45,6 +47,7 @@ const savedDatabases = ref([] as any[]);
 const activeDatabase = ref<string>("");
 const tables = ref([] as any[]);
 const views = ref([] as any[]);
+const triggers = ref([] as any[]);
 
 (async () => {
   savedDatabases.value = await getDatabases();
@@ -75,8 +78,9 @@ const onSelectDatabase = async (database: string) => {
   await selectDatabase(database);
   tables.value = await sendQuery(Queries.getTables);
   views.value = await sendQuery(Queries.getViews);
+  triggers.value = await sendQuery(Queries.getTriggers);
   activeDatabase.value = database;
-  console.log(views.value);
+  console.log(triggers.value);
 };
 
 const onBackupDatabase = async (database: string) => {
@@ -103,6 +107,13 @@ const onDeleteTable = async (tableName: string) => {
   const res = await sendQuery(`DROP TABLE ${tableName}`);
   if (res.status !== 500) {
     tables.value = tables.value.filter((table: any) => table.name !== tableName);
+  }
+}
+
+const onDeleteTrigger = async (triggerName: string) => {
+  const res = await sendQuery(`DROP TRIGGER IF EXISTS ${triggerName}`);
+  if (res.status !== 500) {
+    triggers.value = triggers.value.filter((trigger: any) => trigger.name !== triggerName);
   }
 }
 </script>

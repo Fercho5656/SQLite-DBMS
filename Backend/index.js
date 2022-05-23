@@ -109,6 +109,7 @@ app.post('/query', async (req, res) => {
     const rows = await databaseOperations.executeQuery(currentDatabase, query)
     res.json(rows)
   } catch (error) {
+    console.error(error)
     return res.status(500).send(error)
   }
 })

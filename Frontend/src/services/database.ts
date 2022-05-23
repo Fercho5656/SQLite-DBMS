@@ -1,5 +1,7 @@
 export enum Queries {
   getTables = "SELECT * FROM sqlite_master where type='table';",
+  getViews = "SELECT * FROM sqlite_master where type='view';",
+  getTriggers = "SELECT * FROM sqlite_master where type='trigger';",
   describeTable = 'PRAGMA table_info(%s);'
 }
 
@@ -30,6 +32,26 @@ export const createDatabase = async (dbName: string) => {
     const json = await response.json()
     console.log(json)
     return json
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export const backupDatabase = async (database: string) => {
+  try {
+    const response = await fetch(
+      `http://localhost:3001/databases/${database}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ action: 'backup' })
+      }
+    )
+    const data = await response.json()
+    const { status } = response
+    return { data, status }
   } catch (err) {
     console.error(err)
   }

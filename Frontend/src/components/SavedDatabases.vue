@@ -4,6 +4,7 @@
     <li v-for="database in savedDatabases" :key="database">
       <a @click="$emit('selectDatabase', database)">{{ database }} &nbsp;</a>
       <button @click="$emit('deleteDatabase', database)">Delete</button>
+      <button @click="$emit('backupDatabase', database)">Backup</button>
     </li>
   </ul>
 </template>
@@ -20,7 +21,7 @@ interface Props {
 }
 defineProps<Props>();
 
-defineEmits(["selectDatabase", "deleteDatabase"]);
+defineEmits(["selectDatabase", "deleteDatabase", "backupDatabase"]);
 </script>
 
 <style scoped>

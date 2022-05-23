@@ -3,12 +3,12 @@
         <span>SELECT &nbsp;</span>
         <select v-model="col1">
             <option value="*">*</option>
-            <option v-for="col in columns" :value="col">{{ col }}</option>
+            <option v-for="col in columns" :value="col" :key="col">{{ col }}</option>
         </select>
         <span>&nbsp;FROM {{ tableName }}</span>
         <span>&nbsp;WHERE&nbsp;</span>
         <select v-model="col2">
-            <option v-for="col in columns" :value="col">{{ col }}</option>
+            <option v-for="col in columns" :value="col" :key="col">{{ col }}</option>
         </select>
         <select v-model="sqlOperator">
             <option value="="> =</option>

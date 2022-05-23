@@ -53,10 +53,7 @@ const onCreateTrigger = async () => {
 }
 
 watch([triggerName, when, event, triggerStructure], () => {
-    triggerSql.value = `CREATE TRIGGER ${triggerName.value} ${when.value} ${event.value} ON ${props.tableName}
-    BEGIN
-        ${triggerStructure.value}
-    END`;
+    triggerSql.value = `CREATE TRIGGER ${triggerName.value} ${when.value} ${event.value} ON ${props.tableName} BEGIN ${triggerStructure.value}; END;`;
 })
 </script>
 

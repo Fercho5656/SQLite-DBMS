@@ -67,6 +67,7 @@ const onDeleteDatabase = async (databaseName: string) => {
   savedDatabases.value = savedDatabases.value.filter(
     (database: string) => database !== databaseName
   );
+  activeDatabase.value = ''
 };
 
 const onDeleteView = async (viewName: string) => {

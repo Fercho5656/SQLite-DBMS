@@ -32,8 +32,8 @@
             <button title="Create View" @click="onCreateView(table.name)">👁</button>
             <button title="Create Trigger" @click="onCreateTrigger(table.name)">🔫</button>
             <button title="Select table" @click="onSelectTable(table.name)">☝</button>
-            <button title="Alter table" @click="onEditTable(table.name)">🖊</button>
-            <button title="Delete table" @click="onDeleteTable(table.name)">🗑</button>
+<!--             <button title="Alter table" @click="onEditTable(table.name)">🖊</button>
+ -->            <button title="Delete table" @click="onDeleteTable(table.name)">🗑</button>
           </td>
         </tr>
       </tbody>
